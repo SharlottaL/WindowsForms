@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace WindowsForms
 {
@@ -15,25 +17,88 @@ namespace WindowsForms
         public MainForm()
         {
             InitializeComponent();
+            ShowControls(cmShowControl.Checked);
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        void ShowControls(bool visible)
         {
-            labelCurrentTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
-            labelCurrentTime1.Text = DateTime.Now.ToString("hh:mm:ss");
+            cbShowDateCurrent.Visible = visible;
+            cbShowWeekDayCurrent.Visible = visible;
+            buttonHideControls.Visible = visible;
+            this.ShowInTaskbar = visible;
+            this.TransparencyKey = visible ? Color.Empty : this.BackColor;
+            this.FormBorderStyle = visible ? FormBorderStyle.FixedDialog : FormBorderStyle.None;
+            this.labelTime.BackColor = visible ? this.BackColor : Color.DeepSkyBlue;
         }
-
-        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        void ShowConsole(bool visible)
         {
-            CurrentData.Text = DateTime.Now.ToString("MMMM dd, yyyy");
-            //https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.datetimepicker?view=windowsdesktop-9.0#:~:text=%22MMMM%20dd%2C%20yyyy%20%2D%20dddd%22
+            //bool console = visible ? AllocConsole() : FreeConsole();
+            //if(console)Console.WriteLine(console);
+            if (visible)
+                AllocConsole();
+            else
+                FreeConsole();
         }
+        //private void timer_Tick(object sender, EventArgs e)
+        //{
+        //    labelCurrentTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
+        //}
 
-        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        private void timer1_Tick(object sender, EventArgs e)
         {
-            labelCurrentDay.Text = DateTime.Now.ToString("dddd");
-            //https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.datetimepicker?view=windowsdesktop-9.0#:~:text=%22MMMM%20dd%2C%20yyyy%20%2D%20dddd%22
-
+            labelTime.Text = DateTime.Now.ToString("hh:mm:ss tt");
+            if (cbShowDateCurrent.Checked)
+                labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
+            if (cbShowWeekDayCurrent.Checked)
+                labelTime.Text += $"\n{DateTime.Now.DayOfWeek}";
+            //notifyIcon.Text = labelTime.Text;
+            //if (cmDebugConsole.Checked)
+            //    Console.WriteLine(notifyIcon.Text);
         }
+
+        private void buttonHideControls_Click(object sender, EventArgs e)
+        {
+            ShowControls(cmShowControl.Checked = false);
+        }
+        private void labelTime_DoubleClick(object sender, EventArgs e)
+        {
+            ShowControls(cmShowControl.Checked = true);
+        }
+        private void cmClos_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void topToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            this.TopMost = topToolStripMenuItem.Checked;
+        }
+
+        private void cmShowControl_CheckedChanged(object sender, EventArgs e)
+        {
+            ShowControls(cmShowControl.Checked);
+        }
+        ////////////////////////////////////////////////////////////////////////////
+        [DllImport("kernel32.dll")]
+        public static extern bool AllocConsole();
+        [DllImport("kernel32.dll")]
+        public static extern bool FreeConsole();
+
+       
+        private void cmDebugConsole_DoubleClick(object sender, EventArgs e)
+        {
+            ShowConsole(cmDebugConsole.Checked);
+        }
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            if (this.TopMost) return;
+            this.TopMost = true;
+            this.TopMost = false;
+        }
+
+       
+
+
+        ////////////////////////////////////////////////////////////////////////////
     }
 }
