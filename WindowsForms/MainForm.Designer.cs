@@ -143,15 +143,19 @@
             // 
             // cmShowDateCurrent
             // 
+            this.cmShowDateCurrent.CheckOnClick = true;
             this.cmShowDateCurrent.Name = "cmShowDateCurrent";
             this.cmShowDateCurrent.Size = new System.Drawing.Size(180, 22);
             this.cmShowDateCurrent.Text = "Show date";
+            this.cmShowDateCurrent.CheckedChanged += new System.EventHandler(this.cmShowDateCurrent_CheckedChanged);
             // 
             // cmShowDayWeek
             // 
+            this.cmShowDayWeek.CheckOnClick = true;
             this.cmShowDayWeek.Name = "cmShowDayWeek";
             this.cmShowDayWeek.Size = new System.Drawing.Size(180, 22);
             this.cmShowDayWeek.Text = "Show weekday";
+            this.cmShowDayWeek.CheckedChanged += new System.EventHandler(this.cmShowDayWeek_CheckedChanged);
             // 
             // cmShowControl
             // 
@@ -177,12 +181,14 @@
             this.cmBackgroundColor.Name = "cmBackgroundColor";
             this.cmBackgroundColor.Size = new System.Drawing.Size(180, 22);
             this.cmBackgroundColor.Text = "Background color";
+            this.cmBackgroundColor.Click += new System.EventHandler(this.cmBackgroundColor_Click);
             // 
             // cmForegroundColor
             // 
             this.cmForegroundColor.Name = "cmForegroundColor";
             this.cmForegroundColor.Size = new System.Drawing.Size(180, 22);
             this.cmForegroundColor.Text = "Foreground color";
+            this.cmForegroundColor.Click += new System.EventHandler(this.cmForegroundColor_Click);
             // 
             // toolStripSeparator4
             // 
