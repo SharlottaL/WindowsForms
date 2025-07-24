@@ -41,9 +41,10 @@ namespace WindowsForms
         {
             PrivateFontCollection pfc = new PrivateFontCollection();
             pfc.AddFontFile(filename);
-            lblExampl.Font = new Font(pfc.Families[0], 32);
-
+            lblExampl.Font = new Font(pfc.Families[0], size);
         }
+
+        
 
         private void comboBoxChooseFont_SelectedIndexChanged(object sender, EventArgs e)
         {
