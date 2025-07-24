@@ -15,12 +15,15 @@ namespace WindowsForms
 {
     public partial class MainForm : Form
     {
+        ChooseFont chooseFont;
         ColorDialog cdBackColor;
         ColorDialog cdForeColor;
         public MainForm()
         {
             InitializeComponent();
             ShowControls(cmShowControl.Checked);
+            ShowConsole(cmDebugConsole.Checked = true);
+            chooseFont = new ChooseFont();
             cdBackColor = new ColorDialog();
             cdForeColor = new ColorDialog();
         }
@@ -32,7 +35,7 @@ namespace WindowsForms
             buttonHideControls.Visible = visible;
             this.ShowInTaskbar = visible;
             this.TransparencyKey = visible ? Color.Empty : this.BackColor;
-            this.FormBorderStyle = visible ? FormBorderStyle.FixedDialog : FormBorderStyle.None;
+            this.FormBorderStyle = visible ? FormBorderStyle.FixedToolWindow : FormBorderStyle.None;
             this.labelTime.BackColor = visible ? this.BackColor : Color.DeepSkyBlue;
         }
         void ShowConsole(bool visible)
@@ -56,7 +59,7 @@ namespace WindowsForms
                 labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
             if (cbShowWeekDayCurrent.Checked)
                 labelTime.Text += $"\n{DateTime.Now.DayOfWeek}";
-            //notifyIcon.Text = labelTime.Text;
+           // notifyIcon.Text = labelTime.Text;
             //if (cmDebugConsole.Checked)
             //    Console.WriteLine(notifyIcon.Text);
         }
@@ -115,14 +118,18 @@ namespace WindowsForms
         {
             cdBackColor.ShowDialog();
             labelTime.BackColor = cdBackColor.Color;                 //// if (cdBackColor.ShowDialog() == DialogResult.OK)
-
-
         }
 
         private void cmForegroundColor_Click(object sender, EventArgs e)
         {
             cdForeColor.ShowDialog();
             labelTime.ForeColor = cdForeColor.Color;
+        }
+
+        private void cmFonts_Click(object sender, EventArgs e)
+        {
+            chooseFont.ShowDialog();
+            labelTime.Font = chooseFont.Font;
         }
     }
 }
