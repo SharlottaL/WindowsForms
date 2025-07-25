@@ -59,6 +59,7 @@
             // 
             // labelTime
             // 
+            this.labelTime.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.labelTime.AutoSize = true;
             this.labelTime.ContextMenuStrip = this.cmMainMenuM;
             this.labelTime.Font = new System.Drawing.Font("Script MT Bold", 36F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -68,6 +69,7 @@
             this.labelTime.TabIndex = 0;
             this.labelTime.Text = "Current Time";
             this.labelTime.DoubleClick += new System.EventHandler(this.labelTime_DoubleClick);
+            this.labelTime.MouseDown += new System.Windows.Forms.MouseEventHandler(this.labelTime_MouseDown);
             // 
             // cmMainMenuM
             // 
@@ -221,6 +223,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Cloack PD_411";
             this.cmMainMenuM.ResumeLayout(false);
             this.ResumeLayout(false);

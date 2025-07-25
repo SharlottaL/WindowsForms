@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using System.IO;
 
 namespace WindowsForms
 {
@@ -26,6 +26,18 @@ namespace WindowsForms
             chooseFont = new ChooseFont();
             cdBackColor = new ColorDialog();
             cdForeColor = new ColorDialog();
+            this.Location = new Point
+                (
+                Screen.PrimaryScreen.Bounds.Width - this.Width,
+                100
+                );
+            chooseFont.StartPosition = FormStartPosition.Manual;
+            chooseFont.Location = new Point
+                (
+                this.Location.X - chooseFont.Width - 25,
+                100
+                );
+            //cdBackColor.Site
         }
 
         void ShowControls(bool visible)
@@ -117,7 +129,9 @@ namespace WindowsForms
         private void cmBackgroundColor_Click(object sender, EventArgs e)
         {
             cdBackColor.ShowDialog();
-            labelTime.BackColor = cdBackColor.Color;                 //// if (cdBackColor.ShowDialog() == DialogResult.OK)
+            labelTime.BackColor = cdBackColor.Color;
+            
+            //// if (cdBackColor.ShowDialog() == DialogResult.OK)
         }
 
         private void cmForegroundColor_Click(object sender, EventArgs e)
@@ -128,8 +142,18 @@ namespace WindowsForms
 
         private void cmFonts_Click(object sender, EventArgs e)
         {
+            chooseFont.Location = new Point
+                (
+                this.Location.X - chooseFont.Width - 25,
+                this.Location.Y
+                );
             chooseFont.ShowDialog();
             labelTime.Font = chooseFont.Font;
+        }
+
+        private void labelTime_MouseDown(object sender, MouseEventArgs e)
+        {
+           
         }
     }
 }
