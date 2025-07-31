@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace WindowsForms
 {
@@ -28,16 +29,16 @@ namespace WindowsForms
             cdForeColor = new ColorDialog();
             this.Location = new Point
                 (
-                Screen.PrimaryScreen.Bounds.Width - this.Width,
-                100
+                    Screen.PrimaryScreen.Bounds.Width - this.Width,
+                    100
                 );
             chooseFont.StartPosition = FormStartPosition.Manual;
             chooseFont.Location = new Point
                 (
-                this.Location.X - chooseFont.Width - 25,
-                100
+                    this.Location.X - chooseFont.Width,
+                    100
                 );
-            //cdBackColor.Site
+            LoadSettings();
         }
 
         void ShowControls(bool visible)
@@ -52,12 +53,49 @@ namespace WindowsForms
         }
         void ShowConsole(bool visible)
         {
-            //bool console = visible ? AllocConsole() : FreeConsole();
-            //if(console)Console.WriteLine(console);
             if (visible)
                 AllocConsole();
             else
                 FreeConsole();
+        }
+        void SaveSettings()
+        {
+            StreamWriter settings = new StreamWriter("Settings.ini");
+
+            settings.WriteLine($"{this.Location.X}x{this.Location.Y}");
+            settings.WriteLine(cmETopmost.Checked);     
+            settings.WriteLine(cmShowControl.Checked); 
+            settings.WriteLine(cmDebugConsole.Checked); 
+            settings.WriteLine(cmShowDateCurrent.Checked);    
+            settings.WriteLine(cmShowDayWeek.Checked);  
+            settings.WriteLine(cmLoadOnWindowsStartup.Checked);
+            settings.WriteLine(cdBackColor.Color.ToArgb()); 
+            settings.WriteLine(cdForeColor.Color.ToArgb());
+            settings.WriteLine(chooseFont.Filename);   
+            settings.Close();
+        }
+        void LoadSettings()
+        {
+            StreamReader settings = new StreamReader("Settings.ini");
+            string location = settings.ReadLine();  
+            this.Location = new Point
+                (
+                    Convert.ToInt32(location.Split('x').First()),
+                    Convert.ToInt32(location.Split('x').Last())
+                );
+
+            cmETopmost.Checked = bool.Parse(settings.ReadLine());       
+            cmShowControl.Checked = bool.Parse(settings.ReadLine());  
+            cmDebugConsole.Checked = bool.Parse(settings.ReadLine());  
+            cmShowDateCurrent.Checked = bool.Parse(settings.ReadLine());     
+            cmShowDayWeek.Checked = bool.Parse(settings.ReadLine());    
+            cmLoadOnWindowsStartup.Checked = bool.Parse(settings.ReadLine());
+            cdBackColor.Color = labelTime.BackColor = Color.FromArgb(Convert.ToInt32(settings.ReadLine()));
+            cdForeColor.Color = labelTime.ForeColor = Color.FromArgb(Convert.ToInt32(settings.ReadLine()));
+            string font_name = settings.ReadLine();                   
+            chooseFont = new ChooseFont(this, font_name, 32);
+            labelTime.Font = chooseFont.Font;
+            settings.Close();
         }
         //private void timer_Tick(object sender, EventArgs e)
         //{
@@ -71,9 +109,8 @@ namespace WindowsForms
                 labelTime.Text += $"\n{DateTime.Now.ToString("yyyy.MM.dd")}";
             if (cbShowWeekDayCurrent.Checked)
                 labelTime.Text += $"\n{DateTime.Now.DayOfWeek}";
-           // notifyIcon.Text = labelTime.Text;
-            //if (cmDebugConsole.Checked)
-            //    Console.WriteLine(notifyIcon.Text);
+            notifyIcon1.Text = labelTime.Text;
+       
         }
 
         private void buttonHideControls_Click(object sender, EventArgs e)
@@ -91,7 +128,7 @@ namespace WindowsForms
 
         private void topToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            this.TopMost = topToolStripMenuItem.Checked;
+            this.TopMost = cmETopmost.Checked;
         }
 
         private void cmShowControl_CheckedChanged(object sender, EventArgs e)
@@ -131,7 +168,7 @@ namespace WindowsForms
             cdBackColor.ShowDialog();
             labelTime.BackColor = cdBackColor.Color;
             
-            //// if (cdBackColor.ShowDialog() == DialogResult.OK)
+        
         }
 
         private void cmForegroundColor_Click(object sender, EventArgs e)
@@ -154,6 +191,20 @@ namespace WindowsForms
         private void labelTime_MouseDown(object sender, MouseEventArgs e)
         {
            
+        }
+
+        private void cmLoadOnWindowsStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            string key_name = "Clock_PD_411";
+            RegistryKey key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);  
+            if (cmLoadOnWindowsStartup.Checked) key.SetValue(key_name, Application.ExecutablePath);
+            else key.DeleteValue(key_name, false);  
+            key.Dispose();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
         }
     }
 }

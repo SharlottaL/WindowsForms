@@ -15,6 +15,7 @@ namespace WindowsForms
     public partial class ChooseFont : Form
     {
         public Font Font { get; set; }
+        public string Filename { get; set; }
         public ChooseFont()
         {
             InitializeComponent();
@@ -26,6 +27,15 @@ namespace WindowsForms
             //https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.combobox?view=windowsdesktop-9.0#:~:text=%D0%A1%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BE,%D0%B2%20%D1%80%D0%B0%D1%81%D0%BA%D1%80%D1%8B%D0%B2%D0%B0%D1%8E%D1%89%D0%B5%D0%BC%D1%81%D1%8F%20%D1%81%D0%BF%D0%B8%D1%81%D0%BA%D0%B5.
             comboBoxChooseFont.SelectedIndex = 0;
             
+        }
+        public ChooseFont(MainForm parent, string font_name, int font_size) : this()
+        {
+            
+            nudFontSize.Value = font_size;
+            int index = comboBoxChooseFont.FindStringExact(font_name);
+            comboBoxChooseFont.SelectedIndex = index;
+            Font = lblExampl.Font;
+            Filename = font_name;
         }
         public string[] GetFontListFromCurrentDirectoryByExtension(string extension)
         {
@@ -53,12 +63,14 @@ namespace WindowsForms
 
         private void comboBoxChooseFont_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetFont((sender as ComboBox).SelectedItem.ToString());
+            if ((sender as ComboBox).SelectedItem != null)
+                SetFont((sender as ComboBox).SelectedItem.ToString());
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             Font = lblExampl.Font;
+            Filename = comboBoxChooseFont.SelectedItem.ToString();
         }
 
         private void nudFontSize_ValueChanged(object sender, EventArgs e)
